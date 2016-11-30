@@ -1,0 +1,48 @@
+Sub IRM()
+
+Dim carrier As String, mawb As String, day As String, time As String
+
+carrier = CDZ_IMPA.airlinetxt.Text
+mawb = CDZ_IMPA.MAWBtxt.Text
+day = CDZ_IMPA.Daytxt.Text
+time = CDZ_IMPA.Timetxt.Text
+
+    With Session
+        .SetMousePos 11, 35
+        .TerminalMouse rcLeftClick, rcMouseRow, rcMouseCol
+        .GraphicsMouse rcLeftClick, rcCurrentGraphicsCursorX, rcCurrentGraphicsCursorY
+        .WaitForEvent rcEnterPos, "30", "0", 11, 35
+        .WaitForDisplayString ":", "30", 11, 33
+        .WaitForEvent rcEnterPos, "30", "0", 11, 35
+        .WaitForDisplayString ":", "30", 11, 33
+        .TransmitANSI "irm"
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 4, 2
+    
+    Do
+    For i = 4 To 21
+        
+            If carrier = Session.GetDisplayText(i, 18, 3) And mawb = Session.GetDisplayText(i, 31, 8) Then
+            
+            .SetMousePos i, 2
+            .TerminalMouse rcLeftClick, rcMouseRow, rcMouseCol
+            .GraphicsMouse rcLeftClick, rcCurrentGraphicsCursorX, rcCurrentGraphicsCursorY
+            .WaitForEvent rcEnterPos, "30", "0", i, 2
+            .TransmitANSI "f"
+            .TransmitANSI time
+            .TransmitANSI day
+            
+            End
+            End If
+    Next i
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        
+    Loop Until Session.GetDisplayText(24, 1, 4) = "This"
+    
+    End
+    
+    End With
+    
+End Sub
