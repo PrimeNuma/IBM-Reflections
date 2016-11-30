@@ -1,0 +1,65 @@
+Sub Get_OFT()
+
+Dim HAWBvalue As String
+Dim displaytext As String
+Dim ofttext As Double
+Dim i As Integer
+Dim cur As String
+
+  uiValue = CDZ_IMPA.HAWBtxt.Text
+             
+        If uiValue = vbNullString Then
+            MsgBox "Please enter a HAWB"
+            CDZ_IMPA.HAWBtxt.Text = ""
+        Exit Sub
+        End If
+
+    With Session
+        .WaitForEvent rcEnterPos, "30", "0", 11, 35
+        .WaitForDisplayString ":", "30", 11, 33
+        .TransmitANSI "tr"
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 2, 5
+        .WaitForDisplayString "HB#", "30", 2, 1
+        .TransmitANSI uiValue
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 2, 5
+        .WaitForDisplayString "HB#", "30", 2, 1
+        .TransmitTerminalKey rcIBMPf5Key
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 23, 17
+        .WaitForDisplayString "Function:", "30", 23, 7
+        
+        cur = Session.GetDisplayText(5, 58, 3)
+        
+    For i = 6 To 22
+        displaytext = Session.GetDisplayText(i, 1, 10)
+    
+            If displaytext = "TOTAL CHGS" Then
+            ofttext = Session.GetDisplayText(i, 12, 12)
+            MsgBox ofttext / 100 & " " & cur
+            CDZ_IMPA.HAWBtxt.Text = ""
+            Exit Sub
+            End If
+    Next i
+        
+    For i = 6 To 22
+        displaytext = Session.GetDisplayText(i, 47, 10)
+                 
+            If displaytext = "TOTAL CHGS" Then
+            ofttext = Session.GetDisplayText(i, 58, 12)
+            MsgBox ofttext / 100 & " " & cur
+            CDZ_IMPA.HAWBtxt.Text = ""
+            Exit Sub
+            End If
+        
+    Next i
+        
+        MsgBox "Could not find Total charges"
+        
+    CDZ_IMPA.HAWBtxt.Text = ""
+    
+    End With
+End Sub
