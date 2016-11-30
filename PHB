@@ -1,0 +1,47 @@
+Sub PHB()
+
+Dim HAWBvalue As String
+Dim displaytext As String
+     
+    uiValue = CDZ_IMPA.HAWBtxt.Text
+             
+    If uiValue = vbNullString Then
+        MsgBox "Please enter a HAWB"
+        CDZ_IMPA.HAWBtxt.Text = ""
+    Exit Sub
+    End If
+
+    With Session
+        .WaitForEvent rcEnterPos, "30", "0", 11, 35
+        .WaitForDisplayString ":", "30", 11, 33
+        .TransmitANSI "phb"
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 3, 57
+        .WaitForDisplayString "Station:", "30", 3, 48
+        .SetMousePos 5, 39
+        .TerminalMouse rcLeftClick, rcMouseRow, rcMouseCol
+        .GraphicsMouse rcLeftClick, rcCurrentGraphicsCursorX, rcCurrentGraphicsCursorY
+        .TransmitANSI uiValue
+        .SetMousePos 7, 35
+        .TerminalMouse rcLeftClick, rcMouseRow, rcMouseCol
+        .GraphicsMouse rcLeftClick, rcCurrentGraphicsCursorX, rcCurrentGraphicsCursorY
+        .TransmitANSI "mld"
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 3, 57
+        .WaitForDisplayString "Station:", "30", 3, 48
+        
+        
+        displaytext = Session.GetDisplayText(24, 1, 21)
+        
+        If displaytext = "Housebill not on file" Then
+        MsgBox "Housebill not on file"
+        End If
+        
+        .TransmitTerminalKey rcIBMClearKey
+        
+        CDZ_IMPA.HAWBtxt.Text = ""
+        
+    End With
+End Sub
