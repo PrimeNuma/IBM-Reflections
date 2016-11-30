@@ -1,0 +1,25 @@
+Sub EXW()
+
+Dim oftexr As Double, itotexr As Double, pickup As Double, other As Double, itot As Double, FOBfld As Double, fobb4fld As Double
+
+oftexr = CDZ_IMPA.oftexrtxt.Text
+pickup = CDZ_IMPA.PickupFld.Text
+other = CDZ_IMPA.Otherfld.Text
+itot = CDZ_IMPA.ITOTtxt.Text
+
+If CDZ_IMPA.itotexrtxt.Text = vbNullString Then
+
+FOBfld = Math.Round((pickup + other) / oftexr + itot, 2)
+CDZ_IMPA.FOBfld.Text = FOBfld
+
+Else
+
+itotexr = CDZ_IMPA.itotexrtxt.Text
+fobb4fld = (pickup + other) / oftexr
+FOBfld = Math.Round((fobb4fld * itotexr) + itot, 2)
+CDZ_IMPA.FOBfld.Text = FOBfld
+End If
+
+CDZ_IMPA.ONSfld.Text = Math.Round(FOBfld * 0.0025, 2)
+
+End Sub
