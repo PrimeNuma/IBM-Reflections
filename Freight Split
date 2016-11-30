@@ -1,0 +1,176 @@
+Sub Collectfreight()
+
+Dim HAWBvalue As String
+Dim dispfsc As String, dispSSC As String, disppup As String, disptotal As String
+Dim pickup As Double, FSC As Double, SSC As Double, Weight As Double, ofttext As Double, freight As Double, Pother As Double
+Dim i As Integer
+Dim cur As String
+
+            'CDZ_IMPA.HAWBtxt.Text = FSC / 100 & " " & cur
+            'CDZ_IMPA.HAWBtxt.Text = ""
+
+  uiValue = CDZ_IMPA.HAWBtxt.Text
+           
+        If uiValue = vbNullString Then
+            MsgBox "Please enter a HAWB"
+            CDZ_IMPA.HAWBtxt.Text = ""
+        Exit Sub
+        End If
+
+    With Session
+        .SetMousePos 11, 35
+        .TerminalMouse rcLeftClick, rcMouseRow, rcMouseCol
+        .GraphicsMouse rcLeftClick, rcCurrentGraphicsCursorX, rcCurrentGraphicsCursorY
+        .WaitForEvent rcEnterPos, "30", "0", 11, 35
+        .WaitForDisplayString ":", "30", 11, 33
+        .TransmitANSI "tr"
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 2, 5
+        .WaitForDisplayString "HB#", "30", 2, 1
+        .TransmitANSI uiValue
+        .TransmitTerminalKey rcIBMEnterKey
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 2, 5
+        .WaitForDisplayString "HB#", "30", 2, 1
+        .TransmitTerminalKey rcIBMPf5Key
+        .WaitForEvent rcKbdEnabled, "30", "0", 1, 1
+        .WaitForEvent rcEnterPos, "30", "0", 23, 17
+        .WaitForDisplayString "Function:", "30", 23, 7
+        
+    'currency list of non decimals are: JPY,
+        cur = Session.GetDisplayText(5, 58, 3)
+        
+              
+    'Setting Fuel Surcharge
+    For i = 6 To 22
+        dispfsc = Session.GetDisplayText(i, 1, 10)
+    
+            If dispfsc = "FUEL SURCH" Then
+            FSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispfsc = "FSC       " Then
+            FSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispfsc = "FSH       " Then
+            FSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispfsc = "MYH       " Then
+            FSC = Session.GetDisplayText(i, 12, 12)
+            Exit For
+            
+            End If
+    Next i
+        
+    For i = 6 To 22
+        dispfsc = Session.GetDisplayText(i, 47, 10)
+    
+            If dispfsc = "FUEL SURCH" Then
+            FSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispfsc = "FSC       " Then
+            FSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispfsc = "FSH       " Then
+            FSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispfsc = "MYH       " Then
+            FSC = Session.GetDisplayText(i, 58, 12)
+            Exit For
+            
+            End If
+        
+    Next i
+        
+    'Setting Securities
+    For i = 6 To 22
+        dispSSC = Session.GetDisplayText(i, 1, 11)
+    
+            If dispSSC = "SECURITY SU" Then
+            SSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispSSC = "SSC        " Then
+            SSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispSSC = "SSF        " Then
+            SSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispSSC = "SECURITY FE" Then
+            SSC = Session.GetDisplayText(i, 12, 12)
+            ElseIf dispSSC = "SSH        " Then
+            SSC = Session.GetDisplayText(i, 12, 12)
+            Exit For
+            End If
+    Next i
+        
+    For i = 6 To 22
+        dispSSC = Session.GetDisplayText(i, 47, 11)
+    
+            If dispSSC = "SECURITY SU" Then
+            SSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispSSC = "SSC        " Then
+            SSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispSSC = "SSF        " Then
+            SSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispSSC = "SSH        " Then
+            SSC = Session.GetDisplayText(i, 58, 12)
+            Exit For
+            End If
+        
+    Next i
+        
+    'Setting Pickup Charges
+    For i = 6 To 22
+        disppup = Session.GetDisplayText(i, 1, 6)
+    
+            If disppup = "PICKUP" Then
+            pickup = Session.GetDisplayText(i, 12, 12)
+            ''ElseIf disppup = "PICKUP" Then
+            ''pickup = Session.GetDisplayText(i, 12, 12)
+            ''Exit For
+            End If
+    Next i
+        
+    For i = 6 To 22
+        disppup = Session.GetDisplayText(i, 47, 6)
+    
+            If disppup = "PICKUP" Then
+            pickup = Session.GetDisplayText(i, 58, 12)
+            ''ElseIf disppup = "PICKUP" Then
+            ''pickup = Session.GetDisplayText(i, 58, 12)
+            ''Exit For
+            End If
+        
+    Next i
+        
+    'Setting +Other charges
+    For i = 6 To 22
+        disptotal = Session.GetDisplayText(i, 1, 10)
+    
+            If disptotal = "TOTAL CHGS" Then
+            ofttext = Session.GetDisplayText(i, 12, 12)
+            'MsgBox ofttext / 100 & " " & cur
+            'CDZ_IMPA.HAWBtxt.Text = ""
+            End If
+    Next i
+        
+    For i = 6 To 22
+        disptotal = Session.GetDisplayText(i, 47, 10)
+                 
+            If disptotal = "TOTAL CHGS" Then
+            ofttext = Session.GetDisplayText(i, 58, 12)
+            'MsgBox ofttext / 100 & " " & cur
+            'CDZ_IMPA.HAWBtxt.Text = ""
+            End If
+        
+    Next i
+        
+        Weight = Session.GetDisplayText(6, 12, 12)
+        freight = FSC + SSC + Weight
+    
+    If cur = "JPY" Then
+    CDZ_IMPA.Freightfld.Text = FSC + SSC + Weight
+    CDZ_IMPA.PickupFld.Text = pickup
+    CDZ_IMPA.Otherfld.Text = ofttext - freight
+    Else
+    CDZ_IMPA.Freightfld.Text = (FSC + SSC + Weight) / 100
+    CDZ_IMPA.PickupFld.Text = pickup / 100
+    CDZ_IMPA.Otherfld.Text = (ofttext - freight) / 100
+    End If
+    
+    CDZ_IMPA.CurFld.Text = cur
+    
+    End With
+
+End Sub
