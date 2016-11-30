@@ -6,9 +6,6 @@ Dim pickup As Double, FSC As Double, SSC As Double, Weight As Double, ofttext As
 Dim i As Integer
 Dim cur As String
 
-            'CDZ_IMPA.HAWBtxt.Text = FSC / 100 & " " & cur
-            'CDZ_IMPA.HAWBtxt.Text = ""
-
   uiValue = CDZ_IMPA.HAWBtxt.Text
            
         If uiValue = vbNullString Then
