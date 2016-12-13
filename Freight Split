@@ -100,6 +100,8 @@ Dim cur As String
             SSC = Session.GetDisplayText(i, 58, 12)
             ElseIf dispSSC = "SSF        " Then
             SSC = Session.GetDisplayText(i, 58, 12)
+            ElseIf dispSSC = "SECURITY FE" Then
+            SSC = Session.GetDisplayText(i, 58, 12)
             ElseIf dispSSC = "SSH        " Then
             SSC = Session.GetDisplayText(i, 58, 12)
             Exit For
@@ -163,7 +165,7 @@ Dim cur As String
     Else
     CDZ_IMPA.Freightfld.Text = (FSC + SSC + Weight) / 100
     CDZ_IMPA.PickupFld.Text = pickup / 100
-    CDZ_IMPA.Otherfld.Text = (ofttext - freight) / 100
+    CDZ_IMPA.Otherfld.Text = (ofttext - freight - pickup) / 100
     End If
     
     CDZ_IMPA.CurFld.Text = cur
